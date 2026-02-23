@@ -1,0 +1,36 @@
+#include <Colors.h> 
+
+Colors colors1(5, 4, 3, 2, 12);
+
+void set_random_seed() {
+  int randsum = 0;
+  for (int i=0; i<8; i++){
+    randsum += analogRead(i);
+  }
+  randomSeed(randsum);
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(11, OUTPUT);
+  set_random_seed();
+  colors1.msetup();
+}
+
+
+unsigned long t = 0;
+void loop() {
+  if (colors1.mloop()) {
+    digitalWrite(11, LOW);
+    delay(50);
+  }
+  digitalWrite(11, HIGH);
+  
+  if (millis() >= t + 5000) {
+    t += 5000;
+
+    Serial.println();
+    colors1.print_info();
+  }
+  delay(100);
+}
