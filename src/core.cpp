@@ -34,30 +34,11 @@ void setup() {
 }
 
 byte strikeTimer = 0;
-void module_loop() {
-  bool defused = true;
-  for (int i=22; i <= 52; i+=2) {
-    if (digitalRead(i) == LOW) {
-      defused = false;
-    }
-    if (digitalRead(i+1) == LOW) {
-      if (strikeTimer == 0) {
-        strike();
-        strikeTimer = 10;
-      }
-    }
-  }
-  if (defused) {
-    defuse();
-    Serial.println("Defused!");
-  }
-  if (strikeTimer > 0) {
-    strikeTimer--;
-    Serial.println(strikeTimer);
-  }
-}
 
-byte dt = 10;
+void explode() {
+  tone(A3, 2000, 1000);
+  active = false;
+}
 
 void strike() {
   static byte strikes = 0;
@@ -89,11 +70,30 @@ void defuse() {
   tone(A3, 2500, 600);
 }
 
-
-void explode() {
-  tone(A3, 2000, 1000);
-  active = false;
+void module_loop() {
+  bool defused = true;
+  for (int i=22; i <= 52; i+=2) {
+    if (digitalRead(i) == LOW) {
+      defused = false;
+    }
+    if (digitalRead(i+1) == LOW) {
+      if (strikeTimer == 0) {
+        strike();
+        strikeTimer = 10;
+      }
+    }
+  }
+  if (defused) {
+    defuse();
+    Serial.println("Defused!");
+  }
+  if (strikeTimer > 0) {
+    strikeTimer--;
+    Serial.println(strikeTimer);
+  }
 }
+
+byte dt = 10;
 
 void loop() {
   static unsigned long timer = millis();
